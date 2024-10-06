@@ -1,4 +1,4 @@
-export function initTierBonuss(state) {
+export function initTierBonus(state) {
   const tierBonus = document.querySelector(".tier-bonus");
   let activeTierBonus = null;
 

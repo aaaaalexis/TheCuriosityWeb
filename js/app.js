@@ -1,7 +1,7 @@
 import { initTabs, activateTab } from "./tabManager.js";
 import { initI18n, updateUI } from "./i18n.js";
 import { initSearch } from "./search.js";
-import { initTooltips } from "./tooltips.js";
+import { initTierBonus } from "./tierBonus.js";
 
 const state = {
   data: {},
@@ -20,12 +20,15 @@ async function init() {
       languageSelect: document.getElementById("language-select"),
       searchInput: document.querySelector("#search-input"),
       tabs: document.querySelectorAll(".shop-nav button"),
-      tierBonusContainer: document.querySelector(".tier-bonus-container"),
+      tierBonus: document.querySelector(".tier-bonus"), // Reference to single tierBonus element
     };
 
     // Validate critical elements
-    if (!state.elements.tierBonusContainer) {
-      console.error("Critical element missing: tier-bonus-container");
+    const criticalElements = ["languageSelect", "searchInput", "tierBonus"];
+    const missingElements = criticalElements.filter((elem) => !state.elements[elem]);
+
+    if (missingElements.length > 0) {
+      console.error("Critical elements missing:", missingElements);
       return;
     }
 
@@ -33,14 +36,19 @@ async function init() {
     await initTabs(state);
     initI18n(state);
     initSearch(state);
-    initTooltips(state); // This will now generate the tooltips HTML
 
     // Restore saved state
-    const savedTab = sessionStorage.getItem("selectedTab");
-    const firstTab = savedTab ? document.querySelector(`.shop-nav button[data-tab="${savedTab}"]`) : state.elements.tabs[0];
-
     const savedLanguage = sessionStorage.getItem("selectedLanguage") || "english";
     state.elements.languageSelect.value = savedLanguage.toLowerCase();
+
+    // Update UI with saved/default language
+    updateUI(state);
+
+    // Initialize tier-bonus after language is set
+    initTierBonus(state);
+
+    const savedTab = sessionStorage.getItem("selectedTab");
+    const firstTab = savedTab ? document.querySelector(`.shop-nav button[data-tab="${savedTab}"]`) : state.elements.tabs[0];
 
     state.elements.searchInput.value = sessionStorage.getItem("searchQuery") || "";
     state.currentSearchQuery = state.elements.searchInput.value;
@@ -49,8 +57,6 @@ async function init() {
     if (firstTab) {
       activateTab(firstTab, state);
     }
-
-    updateUI(state);
   } catch (error) {
     console.error("Initialization error:", error);
   }
