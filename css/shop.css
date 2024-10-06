@@ -134,3 +134,33 @@
 .link-item {
   position: relative;
 }
+
+/* Mobile */
+
+@media (max-width: 1440px) {
+  .tier {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  .tier-cost {
+    display: flex;
+    flex: 0 0 2rem;
+    max-width: 100%;
+  }
+  .tier-cost span {
+    transform: none;
+  }
+  .tier:hover .tier-cost span {
+    filter: brightness(1.4);
+  }
+  .tier-cost span img {
+    height: 1rem;
+  }
+  .ability-grid {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+}

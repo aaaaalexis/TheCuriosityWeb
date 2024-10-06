@@ -31,7 +31,7 @@ export function initTierBonuss(state) {
     const tier = e.target.closest(".tier");
     if (!tier || tier === activeTierBonus?.tier) return;
 
-    const currentTab = document.querySelector(".shop-nav button.active")?.dataset.tab;
+    const currentTab = document.querySelector(".shop-tab button.active")?.dataset.tab;
     if (!currentTab) return;
 
     const tierLevel = parseInt(tier.className.match(/t(\d+)/)?.[1] || "0") - 1;

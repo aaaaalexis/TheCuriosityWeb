@@ -61,12 +61,12 @@ body {
   justify-content: space-between;
   align-items: start;
 }
-.shop-nav {
+.shop-tab {
   display: flex;
   align-items: flex-end;
   gap: 0.5rem;
 }
-.shop-nav button {
+.shop-tab button {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -82,7 +82,7 @@ body {
   font-size: 1.5rem;
   word-break: keep-all;
 }
-.shop-nav button.active {
+.shop-tab button.active {
   background: var(--tab-color);
 }
 [data-tab="weapon"] {
@@ -128,19 +128,22 @@ body {
 }
 .shop-name {
   color: #332409;
+  text-align: center;
+  width: min-content;
 }
 .shop-action {
   display: flex;
   gap: 0.5rem;
+  width: 20rem;
 }
 #search-input {
-  border: none;
   border: 0.2rem solid #5b5b5b;
   border-radius: 0.2rem;
   background: #343434;
   padding: 1rem 0.5rem;
-  width: 12rem;
   color: white;
+  flex: 1;
+  min-width: 0;
 }
 #search-input::placeholder {
   font-style: italic;
@@ -149,14 +152,13 @@ body {
   align-self: end;
   appearance: none;
   cursor: pointer;
-  border: none;
   border: 0.2rem solid #5b5b5b;
   border-radius: 0.2rem;
   background: #5b5b5b;
   padding: 1rem 0.5rem;
-  width: 8rem;
   text-align: center;
   color: white;
+  flex: 1;
 }
 #search-input:focus,
 #language-select:focus {
@@ -185,4 +187,54 @@ body {
 }
 .shop-content.active {
   display: flex;
+}
+
+/* Mobile */
+
+@media (max-width: 1440px) {
+  body {
+    flex-direction: column;
+    padding: 0;
+    gap: 0;
+  }
+  .tier-bonus {
+    display: none !important;
+  }
+  .sidebar-container {
+    flex: 0 0 auto;
+  }
+  .sidebar-info {
+    display: none;
+  }
+  .sidebar-logo img {
+    width: auto;
+    height: 4rem;
+    display: block;
+    margin: 1em auto;
+  }
+  .shop-header {
+    padding: 0 1rem;
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+  }
+  .shop-tab {
+    width: 100%;
+  }
+  .shop-tab button {
+    flex: 1;
+    padding: 1em 0;
+    height: auto;
+    max-height: 3.5rem;
+  }
+  .shop-icon,
+  .shop-icon img {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .shop-name {
+    font-size: 1rem;
+  }
+  .shop-action {
+    width: 100%;
+  }
 }

@@ -19,7 +19,7 @@ async function init() {
     state.elements = {
       languageSelect: document.getElementById("language-select"),
       searchInput: document.querySelector("#search-input"),
-      tabs: document.querySelectorAll(".shop-nav button"),
+      tabs: document.querySelectorAll(".shop-tab button"),
       tierBonus: document.querySelector(".tier-bonus"), // Reference to single tierBonus element
     };
 
@@ -48,7 +48,7 @@ async function init() {
     initTierBonus(state);
 
     const savedTab = sessionStorage.getItem("selectedTab");
-    const firstTab = savedTab ? document.querySelector(`.shop-nav button[data-tab="${savedTab}"]`) : state.elements.tabs[0];
+    const firstTab = savedTab ? document.querySelector(`.shop-tab button[data-tab="${savedTab}"]`) : state.elements.tabs[0];
 
     state.elements.searchInput.value = sessionStorage.getItem("searchQuery") || "";
     state.currentSearchQuery = state.elements.searchInput.value;
