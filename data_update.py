@@ -97,11 +97,10 @@ def main():
         }
 
         print("Writing output to JSON file...")
-        with open('scripts/data.json', 'w', encoding='utf-8') as f:
+        with open('json/i18n.json', 'w', encoding='utf-8') as f:
             json.dump(output, f, ensure_ascii=False, indent=2)
 
-        print("Done! Output saved to data.json")
+        print("Done! Output saved to i18n.json")
 
 if __name__ == "__main__":
     main()
-    input('Deadlock 語言設定完成。請按下 Enter 退出...')

@@ -13,7 +13,7 @@ const state = {
 async function init() {
   try {
     // Load data first
-    state.data = await (await fetch("scripts/data.json")).json();
+    state.data = await (await fetch("json/i18n.json")).json();
 
     // Initialize all required DOM elements
     state.elements = {
