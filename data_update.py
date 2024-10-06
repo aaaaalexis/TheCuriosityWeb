@@ -29,26 +29,43 @@ def process_directory(directory):
             data[lang_code] = process_file(file_path)
     return data
 
-def create_translations(data, keys, flatten=False):
-    if flatten:
+def create_translations(data, keys, prefix=None, flatten=False):
+    """
+    Generic translation function that can handle both simple and complex translation needs
+    
+    Args:
+        data: Dictionary of language data
+        keys: Either a string (single key), dict (mapping of new keys to original keys),
+              or None (to get all keys matching prefix)
+        prefix: Optional prefix to filter keys (e.g., 'upgrade_')
+        flatten: If True, returns translations directly instead of nested under keys
+    """
+    if isinstance(keys, str):
+        # Handle single key case (flatten=True case)
         return OrderedDict(sorted({lang: data[lang].get(keys) for lang in data if data[lang].get(keys)}.items()))
     
     translations = {}
-    for key, value in keys.items():
-        trans = {lang: data[lang].get(value) for lang in data if data[lang].get(value)}
-        if trans:
-            translations[key] = OrderedDict(sorted(trans.items()))
+    
+    if prefix:
+        # Get all keys that match the prefix from any language file
+        all_keys = set()
+        for lang_data in data.values():
+            all_keys.update(key for key in lang_data if key.startswith(prefix))
+        
+        # Create translations for each key found
+        for key in sorted(all_keys):
+            trans = {lang: data[lang].get(key) for lang in data if data[lang].get(key)}
+            if trans:
+                translations[key] = OrderedDict(sorted(trans.items()))
+    
+    elif keys:
+        # Handle dictionary mapping case
+        for new_key, original_key in keys.items():
+            trans = {lang: data[lang].get(original_key) for lang in data if data[lang].get(original_key)}
+            if trans:
+                translations[new_key] = OrderedDict(sorted(trans.items()))
+    
     return translations
-
-def create_ability_translations(data):
-    abilities = {}
-    english_data = data.get('english', {})
-    for key, value in english_data.items():
-        if key.startswith('upgrade_'):
-            ability_translations = {lang: data[lang].get(key) for lang in data if data[lang].get(key)}
-            if ability_translations:
-                abilities[value] = OrderedDict(sorted(ability_translations.items()))
-    return abilities
 
 def main():
     repo_url = "https://github.com/SteamDatabase/GameTracking-Deadlock.git"
@@ -68,9 +85,9 @@ def main():
         attributes_data = process_directory(attributes_path)
 
         output = {
-            "abilities": create_ability_translations(gc_data),
-            "ui": {
-                "searchPlaceholder": create_translations(main_data, "CitadelShopSearch", flatten=True),
+            "gc": create_translations(gc_data, None, prefix="upgrade_"),
+            "main": {
+                "CitadelShopSearch": create_translations(main_data, "CitadelShopSearch", flatten=True),
                 "tabNames": create_translations(main_data, {
                     "weapon": "CitadelCategoryWeapon",
                     "vitality": "CitadelCategoryArmor",

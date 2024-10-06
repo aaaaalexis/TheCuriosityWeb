@@ -45,6 +45,11 @@ function setupTierTooltips(state) {
   });
 }
 
+function getActiveTab() {
+  const activeTabButton = document.querySelector(".shop-nav button.active");
+  return activeTabButton ? activeTabButton.dataset.tab : null;
+}
+
 function showTooltip(tier, tooltips, state) {
   // Hide all tooltips first
   hideTooltips(tooltips);
@@ -62,7 +67,13 @@ function showTooltip(tier, tooltips, state) {
   const tooltipSpan = matchingTooltip.querySelector("span");
   if (tooltipSpan) {
     const type = tierClasses[0].replace(/t[0-9]+$/, "");
-    tooltipSpan.textContent = state.data.ui?.tierBonus?.[type]?.[lang] || tooltipSpan.dataset.originalText;
+    tooltipSpan.textContent = state.data.main?.tierBonus?.[type]?.[lang] || tooltipSpan.dataset.originalText;
+  }
+
+  // Set data-tab attribute based on the active tab
+  const activeTab = getActiveTab();
+  if (activeTab) {
+    matchingTooltip.setAttribute("data-tab", activeTab);
   }
 
   matchingTooltip.style.display = "block";

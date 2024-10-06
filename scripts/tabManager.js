@@ -17,11 +17,6 @@ async function initializeTabs(state) {
         state.tabStyles[tab] = style.textContent;
         style.remove();
       }
-
-      // Store original text content
-      tabContent.querySelectorAll(".ability .label, .shop-name").forEach((el) => {
-        el.dataset.originalText = el.textContent;
-      });
     })
   );
 

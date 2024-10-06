@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     // Load global data
     state.data = await (await fetch("scripts/data.json")).json();
+    console.log("Loaded data:", state.data); // Debugging statement
 
     // Store DOM elements in state
     state.languageSelect = document.getElementById("language-select");

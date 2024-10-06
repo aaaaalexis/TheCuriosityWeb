@@ -85,14 +85,41 @@ body {
 .shop-nav button.active {
   background: var(--tab-color);
 }
-.shop-nav button[data-tab="weapon"] {
+[data-tab="weapon"] {
   --tab-color: #ec981a;
+  --tier-color: linear-gradient(to right, #594022, #523606);
+  --tier-color-even: linear-gradient(to right, #49351b, #422a04);
+  --tier-color-hover: linear-gradient(to right, #755221, #754c0a);
+  --tier-bonus-color: #2a2206;
+  --ability-color: #d08d3e;
+  --ability-color-hover: #fcac4d;
+  --ability-color-active: #f2c786;
+  --ability-color-active-hover: #fff0a3;
+  --ability-icon-filter: brightness(0) saturate(100%) invert(13%) sepia(61%) saturate(524%) hue-rotate(1deg) brightness(96%) contrast(102%);
 }
-.shop-nav button[data-tab="vitality"] {
+[data-tab="vitality"] {
   --tab-color: #7cbb1e;
+  --tier-color: linear-gradient(to right, #4c7215, #2d4706);
+  --tier-color-even: linear-gradient(to right, #415f10, #233a04);
+  --tier-color-hover: linear-gradient(to right, #557e16, #3e6009);
+  --tier-bonus-color: #1b2c00;
+  --ability-color: #74b01c;
+  --ability-color-hover: #86c920;
+  --ability-color-active: #d0f995;
+  --ability-color-active-hover: #e3ffa3;
+  --ability-icon-filter: brightness(0) saturate(100%) invert(16%) sepia(24%) saturate(2895%) hue-rotate(50deg) brightness(91%) contrast(102%);
 }
-.shop-nav button[data-tab="spirit"] {
+[data-tab="spirit"] {
   --tab-color: #cf91ff;
+  --tier-color: linear-gradient(to right, #372347, #3f2853);
+  --tier-color-even: linear-gradient(to right, #331f42, #342046);
+  --tier-color-hover: linear-gradient(to right, #5e3f76, #62427c);
+  --tier-bonus-color: #2d1d3c;
+  --ability-color: #c288f0;
+  --ability-color-hover: #de9cff;
+  --ability-color-active: #dabef0;
+  --ability-color-active-hover: #f9d9ff;
+  --ability-icon-filter: brightness(0) saturate(100%) invert(10%) sepia(14%) saturate(5771%) hue-rotate(247deg) brightness(95%) contrast(89%);
 }
 .shop-icon,
 .shop-icon img {

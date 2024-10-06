@@ -9,7 +9,7 @@ function generateTierBonuses() {
   tierBonuses.forEach(({ type, values, icon, label }) => {
     values.forEach((value, index) => {
       container.innerHTML += `
-          <div class="tier-bonus ${type}t${index + 1}">
+          <div class="tier-bonus ${type}-t${index + 1}">
             <strong>${value}</strong>
             <img src="${icon}" />
             <br />

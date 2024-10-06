@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       // Extract unique language keys
-      const languages = extractLanguages(data.abilities);
+      const languages = extractLanguages(data.gc);
 
       // Get the select element
       const selectElement = document.getElementById("language-select");

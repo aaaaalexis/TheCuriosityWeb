@@ -15,13 +15,13 @@ function initializeSearch(state) {
 
 function updateSearchPlaceholder(state) {
   const lang = state.languageSelect.value;
-  state.searchInput.placeholder = state.data.ui?.searchPlaceholder?.[lang] || state.searchInput.dataset.originalPlaceholder;
+  state.searchInput.placeholder = state.data.main?.CitadelShopSearch?.[lang] || state.searchInput.dataset.originalPlaceholder;
 }
 
 function filterContent(container, state) {
   if (!container) return;
 
-  const abilities = state.data.abilities;
+  const gc = state.data.gc;
 
   container.querySelectorAll(".tier").forEach((tier) => {
     let hasMatch = false;
@@ -29,7 +29,7 @@ function filterContent(container, state) {
     tier.querySelectorAll(".ability").forEach((ability) => {
       const label = ability.querySelector(".label");
       const originalText = label?.dataset.originalText;
-      const abilityData = abilities?.[originalText];
+      const abilityData = gc?.[originalText];
 
       const matches = !state.currentSearchQuery || (abilityData && Object.values(abilityData).some((name) => name.toLowerCase().includes(state.currentSearchQuery)));
 

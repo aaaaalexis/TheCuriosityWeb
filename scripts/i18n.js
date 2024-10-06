@@ -14,14 +14,14 @@ function updateUI(state) {
   const activeContent = document.querySelector(".shop-content.active");
   updateContent(activeContent, state);
   filterContent(activeContent, state);
-  updateSidebarInfo(state); // Add this line to update sidebar info
+  updateSidebarInfo(state);
 }
 
 function updateTabNames(state) {
   const lang = state.languageSelect.value;
   document.querySelectorAll(".shop-nav .shop-name").forEach((el) => {
     const tabName = el.closest("button").dataset.tab;
-    el.textContent = state.data.ui?.tabNames?.[tabName]?.[lang] || el.dataset.originalText;
+    el.textContent = state.data.main?.tabNames?.[tabName]?.[lang] || el.dataset.originalText;
   });
 }
 
@@ -29,29 +29,41 @@ function updateContent(container, state) {
   if (!container) return;
 
   const lang = state.languageSelect.value;
-  const { abilities, ui } = state.data;
+  const { gc, main } = state.data;
 
   // Update ability labels
   container.querySelectorAll(".ability .label").forEach((label) => {
-    const originalText = label.dataset.originalText;
-    if (abilities && abilities[originalText]) {
-      label.textContent = abilities[originalText][lang] || originalText;
+    const upgradeKey = label.getAttribute("data-original-text");
+
+    if (!upgradeKey) {
+      console.warn("No data-original-text attribute found for label:", label.textContent);
+      return;
+    }
+
+    // Look up the translation in the gc object
+    if (gc && gc[upgradeKey] && gc[upgradeKey][lang]) {
+      label.textContent = gc[upgradeKey][lang];
+    } else {
+      console.warn(`Translation not found for ${upgradeKey} in language ${lang}`);
+      // Keep the existing text if no translation is found
     }
   });
 
   // Update active/new labels
   ["active", "new"].forEach((type) => {
     const labelKey = type === "active" ? "activeLabel" : "newLabel";
-    const labelText = ui?.labels?.[type]?.[lang] || "";
+    const labelText = main?.labels?.[type]?.[lang] || "";
 
-    container.querySelectorAll(`.${type}-item`).forEach((item) => (item.dataset[labelKey] = labelText));
+    container.querySelectorAll(`.${type}-item`).forEach((item) => {
+      item.dataset[labelKey] = labelText;
+    });
     document.documentElement.style.setProperty(`--${type}-label`, `"${labelText}"`);
   });
 }
 
 function updateSidebarInfo(state) {
   const lang = state.languageSelect.value;
-  const sidebarInfo = state.data.ui?.sidebarInfo;
+  const sidebarInfo = state.data.main?.sidebarInfo;
 
   if (sidebarInfo) {
     const sidebarInfoElement = document.querySelector(".sidebar-info");
