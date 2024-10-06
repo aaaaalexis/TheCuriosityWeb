@@ -21,13 +21,16 @@ export async function initTabs(state) {
 }
 
 export function activateTab(btn, state) {
+  const tab = btn.dataset.tab;
+  const tabElement = document.querySelector(`.shop-content[data-tab="${tab}"]`);
+
   document.querySelectorAll(".shop-nav button, .shop-content").forEach((el) => el.classList.remove("active"));
   btn.classList.add("active");
-  const tab = btn.dataset.tab;
-  document.querySelector(`.shop-content[data-tab="${tab}"]`).classList.add("active");
+  tabElement.classList.add("active");
 
   sessionStorage.setItem("selectedTab", tab);
   document.documentElement.style.setProperty("--tab-color", getComputedStyle(btn).getPropertyValue("--tab-color"));
+  document.documentElement.style.setProperty("--tier-bonus-color", getComputedStyle(tabElement).getPropertyValue("--tier-bonus-color"));
 
   updateTabStyles(tab, state.tabStyles);
   updateUI(state);
@@ -40,10 +43,5 @@ function updateTabStyles(tab, tabStyles) {
     style.id = "dynamic-tab-style";
     style.textContent = tabStyles[tab];
     document.head.appendChild(style);
-  }
-
-  const tabElement = document.querySelector(`.shop-content[data-tab="${tab}"]`);
-  if (tabElement) {
-    document.body.style.setProperty("--tier-bonus-color", getComputedStyle(tabElement).getPropertyValue("--tier-bonus-color"));
   }
 }
