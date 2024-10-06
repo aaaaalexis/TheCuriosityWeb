@@ -1,57 +1,61 @@
-// Global state
+import { initTabs, activateTab } from "./tabManager.js";
+import { initI18n, updateUI } from "./i18n.js";
+import { initSearch } from "./search.js";
+import { initTooltips } from "./tooltips.js";
+
 const state = {
   data: {},
   tabStyles: {},
   currentSearchQuery: "",
-  languageSelect: null,
-  searchInput: null,
+  elements: {},
 };
 
-// Import all required modules
-import { initializeTabs, activateTab } from "./tabManager.js";
-import { initializeI18n, updateUI } from "./i18n.js";
-import { initializeSearch, filterContent } from "./search.js";
-import { setupTierTooltips } from "./tooltips.js";
-import "./tierBonusGenerator.js"; // Import the new tierBonusGenerator.js
-import "./languageSelector.js"; // Import the new languageSelector.js
-
-document.addEventListener("DOMContentLoaded", async () => {
+async function init() {
   try {
-    // Load global data
+    // Load data first
     state.data = await (await fetch("scripts/data.json")).json();
 
-    // Store DOM elements in state
-    state.languageSelect = document.getElementById("language-select");
-    state.searchInput = document.querySelector("#search-input");
+    // Initialize all required DOM elements
+    state.elements = {
+      languageSelect: document.getElementById("language-select"),
+      searchInput: document.querySelector("#search-input"),
+      tabs: document.querySelectorAll(".shop-nav button"),
+      tierBonusContainer: document.querySelector(".tier-bonus-container"),
+    };
 
-    // Initialize all modules
-    await initializeTabs(state);
-    initializeI18n(state);
-    initializeSearch(state);
-    setupTierTooltips(state);
+    // Validate critical elements
+    if (!state.elements.tierBonusContainer) {
+      console.error("Critical element missing: tier-bonus-container");
+      return;
+    }
 
-    // Initialize UI state from session storage
+    // Initialize features
+    await initTabs(state);
+    initI18n(state);
+    initSearch(state);
+    initTooltips(state); // This will now generate the tooltips HTML
+
+    // Restore saved state
     const savedTab = sessionStorage.getItem("selectedTab");
-    const tabs = document.querySelectorAll(".shop-nav button");
-    const firstTab = savedTab ? document.querySelector(`.shop-nav button[data-tab="${savedTab}"]`) : tabs[0];
+    const firstTab = savedTab ? document.querySelector(`.shop-nav button[data-tab="${savedTab}"]`) : state.elements.tabs[0];
 
-    const savedLang = sessionStorage.getItem("selectedLanguage");
-    if (savedLang) {
-      state.languageSelect.value = savedLang;
+    const savedLanguage = sessionStorage.getItem("selectedLanguage") || "english";
+    state.elements.languageSelect.value = savedLanguage.toLowerCase();
+
+    state.elements.searchInput.value = sessionStorage.getItem("searchQuery") || "";
+    state.currentSearchQuery = state.elements.searchInput.value;
+
+    // Activate initial tab
+    if (firstTab) {
+      activateTab(firstTab, state);
     }
 
-    // Restore saved search query if it exists
-    const savedSearch = sessionStorage.getItem("searchQuery");
-    if (savedSearch) {
-      state.searchInput.value = savedSearch;
-      state.currentSearchQuery = savedSearch;
-    }
-
-    activateTab(firstTab, state);
     updateUI(state);
   } catch (error) {
-    console.error("Error during initialization:", error);
+    console.error("Initialization error:", error);
   }
-});
+}
+
+document.addEventListener("DOMContentLoaded", init);
 
 export { state };
