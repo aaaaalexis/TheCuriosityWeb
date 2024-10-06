@@ -1,5 +1,4 @@
-import { updateContent } from "./i18n.js";
-import { filterContent } from "./search.js";
+import { updateUI } from "./i18n.js";
 
 async function initializeTabs(state) {
   const tabs = document.querySelectorAll(".shop-nav button");
@@ -41,9 +40,8 @@ function activateTab(btn, state) {
   // Update tab-specific styles
   updateTabStyles(tab, state.tabStyles);
 
-  // Update content and apply current search filter
-  updateContent(content, state);
-  filterContent(content, state);
+  // Update content translations and apply current search filter
+  updateUI(state);
 }
 
 function updateTabStyles(tab, tabStyles) {

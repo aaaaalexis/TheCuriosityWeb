@@ -29,21 +29,15 @@ def process_directory(directory):
             data[lang_code] = process_file(file_path)
     return data
 
-def create_translations(data, keys, prefix=None, flatten=False):
+def create_translations(data, keys=None, prefix=None):
     """
-    Generic translation function that can handle both simple and complex translation needs
+    Create translations using original keys from the data
     
     Args:
         data: Dictionary of language data
-        keys: Either a string (single key), dict (mapping of new keys to original keys),
-              or None (to get all keys matching prefix)
-        prefix: Optional prefix to filter keys (e.g., 'upgrade_')
-        flatten: If True, returns translations directly instead of nested under keys
+        keys: List of specific keys to include, or None for all/prefix-filtered
+        prefix: Optional prefix to filter keys
     """
-    if isinstance(keys, str):
-        # Handle single key case (flatten=True case)
-        return OrderedDict(sorted({lang: data[lang].get(keys) for lang in data if data[lang].get(keys)}.items()))
-    
     translations = {}
     
     if prefix:
@@ -51,19 +45,18 @@ def create_translations(data, keys, prefix=None, flatten=False):
         all_keys = set()
         for lang_data in data.values():
             all_keys.update(key for key in lang_data if key.startswith(prefix))
-        
-        # Create translations for each key found
-        for key in sorted(all_keys):
-            trans = {lang: data[lang].get(key) for lang in data if data[lang].get(key)}
-            if trans:
-                translations[key] = OrderedDict(sorted(trans.items()))
+        keys = sorted(all_keys)
+    elif keys is None:
+        # Get all keys from any language file
+        all_keys = set()
+        for lang_data in data.values():
+            all_keys.update(lang_data.keys())
+        keys = sorted(all_keys)
     
-    elif keys:
-        # Handle dictionary mapping case
-        for new_key, original_key in keys.items():
-            trans = {lang: data[lang].get(original_key) for lang in data if data[lang].get(original_key)}
-            if trans:
-                translations[new_key] = OrderedDict(sorted(trans.items()))
+    for key in keys:
+        trans = {lang: data[lang].get(key) for lang in data if data[lang].get(key)}
+        if trans:
+            translations[key] = OrderedDict(sorted(trans.items()))
     
     return translations
 
@@ -85,28 +78,22 @@ def main():
         attributes_data = process_directory(attributes_path)
 
         output = {
-            "gc": create_translations(gc_data, None, prefix="upgrade_"),
-            "main": {
-                "CitadelShopSearch": create_translations(main_data, "CitadelShopSearch", flatten=True),
-                "tabNames": create_translations(main_data, {
-                    "weapon": "CitadelCategoryWeapon",
-                    "vitality": "CitadelCategoryArmor",
-                    "spirit": "CitadelCategoryTech"
-                }),
-                "tierBonus": create_translations(attributes_data, {
-                    "weapon": "WeaponPower_label",
-                    "vitality": "ArmorPower_label",
-                    "spirit": "TechPower_label"
-                }),
-                "sidebarInfo": create_translations(main_data, {
-                    "title": "BrowseItems_Title",
-                    "desc": "BrowseItems_Desc",
-                }),
-                "labels": create_translations(main_data, {
-                    "active": "item_info_active",
-                    "new": "item_info_new"
-                })
-            }
+            "gc": create_translations(gc_data, prefix="upgrade_"),
+            "main": create_translations(main_data, [
+                "CitadelShopSearch",
+                "CitadelCategoryWeapon",
+                "CitadelCategoryArmor",
+                "CitadelCategoryTech",
+                "BrowseItems_Title",
+                "BrowseItems_Desc",
+                "item_info_active",
+                "item_info_new"
+            ]),
+            "attributes": create_translations(attributes_data, [
+                "WeaponPower_label",
+                "ArmorPower_label",
+                "TechPower_label"
+            ])
         }
 
         print("Writing output to JSON file...")
@@ -117,3 +104,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    input('Deadlock 語言設定完成。請按下 Enter 退出...')

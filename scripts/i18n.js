@@ -9,72 +9,60 @@ function initializeI18n(state) {
 }
 
 function updateUI(state) {
-  updateTabNames(state);
+  updateTranslations(state);
   updateSearchPlaceholder(state);
   const activeContent = document.querySelector(".shop-content.active");
-  updateContent(activeContent, state);
   filterContent(activeContent, state);
-  updateSidebarInfo(state);
 }
 
-function updateTabNames(state) {
+function updateTranslations(state) {
   const lang = state.languageSelect.value;
-  document.querySelectorAll(".shop-nav .shop-name").forEach((el) => {
-    const tabName = el.closest("button").dataset.tab;
-    el.textContent = state.data.main?.tabNames?.[tabName]?.[lang] || el.dataset.originalText;
-  });
-}
+  const { gc, main, attributes } = state.data;
 
-function updateContent(container, state) {
-  if (!container) return;
+  // Select all elements with data-original-text attribute
+  document.querySelectorAll("[data-original-text]").forEach((element) => {
+    const key = element.getAttribute("data-original-text");
+    let translation = getTranslation(key, lang, gc, main, attributes);
 
-  const lang = state.languageSelect.value;
-  const { gc, main } = state.data;
-
-  // Update ability labels
-  container.querySelectorAll(".ability .label").forEach((label) => {
-    const upgradeKey = label.getAttribute("data-original-text");
-
-    if (!upgradeKey) {
-      console.warn("No data-original-text attribute found for label:", label.textContent);
-      return;
-    }
-
-    // Look up the translation in the gc object
-    if (gc && gc[upgradeKey] && gc[upgradeKey][lang]) {
-      label.textContent = gc[upgradeKey][lang];
+    // Update text content if translation found
+    if (translation) {
+      element.textContent = translation;
     } else {
-      console.warn(`Translation not found for ${upgradeKey} in language ${lang}`);
-      // Keep the existing text if no translation is found
+      console.warn(`Translation not found for ${key} in language ${lang}`);
     }
   });
 
-  // Update active/new labels
-  ["active", "new"].forEach((type) => {
-    const labelKey = type === "active" ? "activeLabel" : "newLabel";
-    const labelText = main?.labels?.[type]?.[lang] || "";
+  // Handle active/new labels
+  updateSpecialLabels(state, lang);
+}
+function getTranslation(key, lang, gc, main, attributes) {
+  // Check in gc translations first (for abilities)
+  if (gc?.[key]?.[lang]) {
+    return gc[key][lang];
+  }
+  // Check in main translations
+  else if (main?.[key]?.[lang]) {
+    return main[key][lang];
+  }
+  // Check in attributes translations
+  else if (attributes?.[key]?.[lang]) {
+    return attributes[key][lang];
+  }
 
-    container.querySelectorAll(`.${type}-item`).forEach((item) => {
-      item.dataset[labelKey] = labelText;
-    });
+  return null; // No translation found
+}
+
+function updateSpecialLabels(state, lang) {
+  const { main } = state.data;
+
+  // Update active/new labels CSS variables
+  ["active", "new"].forEach((type) => {
+    const labelKey = `item_info_${type}`;
+    const labelText = main?.[labelKey]?.[lang] || "";
+
+    // Update CSS variable
     document.documentElement.style.setProperty(`--${type}-label`, `"${labelText}"`);
   });
 }
 
-function updateSidebarInfo(state) {
-  const lang = state.languageSelect.value;
-  const sidebarInfo = state.data.main?.sidebarInfo;
-
-  if (sidebarInfo) {
-    const sidebarInfoElement = document.querySelector(".sidebar-info");
-    if (sidebarInfoElement) {
-      const title = sidebarInfo.title?.[lang] || "Browse Items";
-      const desc = sidebarInfo.desc?.[lang] || "Browse through the item catalog to get yourself ready for your next match!";
-
-      sidebarInfoElement.querySelector("span").textContent = title;
-      sidebarInfoElement.querySelector("div").textContent = desc;
-    }
-  }
-}
-
-export { initializeI18n, updateUI, updateContent };
+export { initializeI18n, updateUI, updateTranslations };

@@ -2,14 +2,6 @@ function setupTierTooltips(state) {
   let currentTier = null;
   const tooltips = document.querySelectorAll(".tier-bonus");
 
-  // Store original tooltip text
-  tooltips.forEach((tooltip) => {
-    const span = tooltip.querySelector("span");
-    if (span) {
-      span.dataset.originalText = span.textContent;
-    }
-  });
-
   // Event listeners
   document.addEventListener("mouseover", (e) => {
     const tier = e.target.closest(".tier");
@@ -68,12 +60,6 @@ function showTooltip(tier, tooltips, state) {
   if (tooltipSpan) {
     const type = tierClasses[0].replace(/t[0-9]+$/, "");
     tooltipSpan.textContent = state.data.main?.tierBonus?.[type]?.[lang] || tooltipSpan.dataset.originalText;
-  }
-
-  // Set data-tab attribute based on the active tab
-  const activeTab = getActiveTab();
-  if (activeTab) {
-    matchingTooltip.setAttribute("data-tab", activeTab);
   }
 
   matchingTooltip.style.display = "block";
