@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="styles/style.css" />
+    <link rel="stylesheet" type="text/css" href="styles/type.css" />
+  </head>
+  <body>
+    <div class="tier-bonus-container"></div>
+    <div class="sidebar-container">
+      <div class="sidebar-logo"><img src="images/shop/shop_logo_psd.png" /></div>
+      <div class="sidebar-info">
+        <span>Browse Items</span>
+        <div>Browse through the item catalog to get yourself ready for your next match!</div>
+      </div>
+    </div>
+    <div class="shop-container">
+      <div class="shop-header">
+        <div class="shop-nav">
+          <button data-tab="weapon">
+            <div class="shop-icon"><img src="images/hud/core/icon_courage.svg" /></div>
+            <div class="shop-name">Weapon</div>
+          </button>
+          <button data-tab="vitality">
+            <div class="shop-icon"><img src="images/hud/core/icon_fortitude.svg" /></div>
+            <div class="shop-name">Vitality</div>
+          </button>
+          <button data-tab="spirit">
+            <div class="shop-icon"><img src="images/hud/core/icon_spirit.svg" /></div>
+            <div class="shop-name">Spirit</div>
+          </button>
+        </div>
+        <div class="shop-action">
+          <select id="language-select"></select>
+          <input type="search" id="search-input" placeholder="Search" />
+        </div>
+      </div>
+      <div class="shop-divider"></div>
+
+      <div class="shop-content" data-tab="weapon">Weapon content here</div>
+      <div class="shop-content" data-tab="vitality">Vitality content here</div>
+      <div class="shop-content" data-tab="spirit">Spirit content here</div>
+    </div>
+    <script type="module" src="scripts/app.js"></script>
+  </body>
+</html>
