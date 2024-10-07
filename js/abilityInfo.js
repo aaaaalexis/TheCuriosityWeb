@@ -4,6 +4,48 @@ export function initAbilityInfo(state) {
   const abilityInfo = document.querySelector(".ability-info");
   let activeAbilityInfo = null;
 
+  const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+  if (isTouchDevice) {
+    initTouchBehavior(abilityInfo, state);
+  } else {
+    initMouseBehavior(abilityInfo, state);
+  }
+
+  document.addEventListener(
+    "scroll",
+    (e) => {
+      if (activeAbilityInfo) {
+        showAbilityInfo(activeAbilityInfo.abilityInfo, activeAbilityInfo.ability);
+      }
+    },
+    true
+  );
+
+  const infoClose = abilityInfo.querySelector(".info-close");
+  if (infoClose) {
+    infoClose.addEventListener("click", () => {
+      hideAbilityInfo(abilityInfo);
+    });
+  }
+}
+
+function initTouchBehavior(abilityInfo, state) {
+  document.addEventListener("click", (e) => {
+    const ability = e.target.closest(".ability");
+
+    if (ability) {
+      e.preventDefault();
+      handleAbilityTouch(ability, abilityInfo, state);
+    } else if (!e.target.closest(".ability-info")) {
+      hideAbilityInfo(abilityInfo);
+    }
+  });
+}
+
+function initMouseBehavior(abilityInfo, state) {
+  let activeAbilityInfo = null;
+
   document.addEventListener("mouseover", (e) => {
     const ability = e.target.closest(".ability");
     if (!ability || ability === activeAbilityInfo?.ability) return;
@@ -14,13 +56,10 @@ export function initAbilityInfo(state) {
     const textKey = nameElement.dataset.text;
     const cost = nameElement.dataset.cost;
 
-    // Get all translations for this ability
     const translations = state.data.gc[textKey];
     if (!translations) return;
 
-    // Update ability info content
     updateAbilityInfoContent(abilityInfo, translations, textKey, cost, state);
-
     showAbilityInfo(abilityInfo, ability);
     activeAbilityInfo = { ability, abilityInfo };
   });
@@ -34,16 +73,30 @@ export function initAbilityInfo(state) {
       }
     }
   });
+}
 
-  document.addEventListener(
-    "scroll",
-    (e) => {
-      if (activeAbilityInfo) {
-        showAbilityInfo(activeAbilityInfo.abilityInfo, activeAbilityInfo.ability);
-      }
-    },
-    true
-  );
+function handleAbilityTouch(ability, abilityInfo, state) {
+  const nameElement = ability.querySelector(".ability-name");
+  if (!nameElement) return;
+
+  const textKey = nameElement.dataset.text;
+  const cost = nameElement.dataset.cost;
+
+  const translations = state.data.gc[textKey];
+  if (!translations) return;
+
+  updateAbilityInfoContent(abilityInfo, translations, textKey, cost, state);
+  showAbilityInfoCentered(abilityInfo);
+}
+
+function showAbilityInfoCentered(abilityInfo) {
+  abilityInfo.style.display = "flex";
+  abilityInfo.style.opacity = "1";
+  abilityInfo.style.position = "fixed";
+  abilityInfo.style.left = "50%";
+  abilityInfo.style.top = "50%";
+  abilityInfo.style.transform = "translate(-50%, -50%)";
+  abilityInfo.style.zIndex = "1000";
 }
 
 function updateAbilityInfoContent(abilityInfo, translations, textKey, cost, state) {
