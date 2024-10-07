@@ -1,3 +1,4 @@
+const GITHUB_API_KEY = ""; // Replace with your GitHub API key if you have one
 const GITHUB_API = "https://api.github.com/repos/SteamDatabase/GameTracking-Deadlock/contents";
 const RAW_CONTENT_BASE = "https://raw.githubusercontent.com/SteamDatabase/GameTracking-Deadlock/master";
 const LOCALIZATION_PATH = "/game/citadel/resource/localization";
@@ -35,7 +36,10 @@ async function fetchDirectoryStructure(paths) {
   try {
     // Single API call to get all directory contents
     const response = await fetch(`${GITHUB_API}${LOCALIZATION_PATH}`, {
-      headers: { Accept: "application/vnd.github.v3+json" },
+      headers: {
+        Accept: "application/vnd.github.v3+json",
+        ...(GITHUB_API_KEY ? { Authorization: `token ${GITHUB_API_KEY}` } : {}),
+      },
     });
 
     if (!response.ok) throw new Error(`Failed to fetch directory: ${response.statusText}`);
@@ -70,7 +74,10 @@ async function processDirectory(dirInfo, prefix = null, specificKeys = null) {
 
     // Fetch all txt files in the directory
     const files = await fetch(`${GITHUB_API}${dirInfo.path}`, {
-      headers: { Accept: "application/vnd.github.v3+json" },
+      headers: {
+        Accept: "application/vnd.github.v3+json",
+        ...(GITHUB_API_KEY ? { Authorization: `token ${GITHUB_API_KEY}` } : {}),
+      },
     }).then((res) => res.json());
 
     const txtFiles = files.filter((file) => file.name.endsWith(".txt"));
