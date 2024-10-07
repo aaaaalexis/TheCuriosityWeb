@@ -152,6 +152,9 @@
   .tier-cost span {
     transform: none;
   }
+  .tier-bonus {
+    display: none !important;
+  }
   .tier:hover .tier-cost span {
     filter: brightness(1.4);
   }

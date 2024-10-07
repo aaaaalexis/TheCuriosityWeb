@@ -2,6 +2,7 @@ import { initTabs, activateTab } from "./tabManager.js";
 import { initI18n, updateUI } from "./i18n.js";
 import { initSearch } from "./search.js";
 import { initTierBonus } from "./tierBonus.js";
+import { initAbilityInfo } from "./abilityInfo.js";
 
 const state = {
   data: {},
@@ -44,8 +45,9 @@ async function init() {
     // Update UI with saved/default language
     updateUI(state);
 
-    // Initialize tier-bonus after language is set
+    // Initialize tier-bonus and ability-info after language is set
     initTierBonus(state);
+    initAbilityInfo(state);
 
     const savedTab = sessionStorage.getItem("selectedTab");
     const firstTab = savedTab ? document.querySelector(`.shop-tab button[data-tab="${savedTab}"]`) : state.elements.tabs[0];
