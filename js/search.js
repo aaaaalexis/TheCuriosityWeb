@@ -15,9 +15,9 @@ export function filterContent(container, state) {
   container.querySelectorAll(".tier").forEach((tier) => {
     let hasMatch = false;
     tier.querySelectorAll(".ability").forEach((ability) => {
-      const label = ability.querySelector(".label");
-      const originalText = label?.dataset.originalText;
-      const abilityData = gc?.[originalText];
+      const label = ability.querySelector(".ability-name");
+      const text = label?.dataset.text;
+      const abilityData = gc?.[text];
       const matches = !state.currentSearchQuery || (abilityData && Object.values(abilityData).some((name) => name.toLowerCase().includes(state.currentSearchQuery)));
       ability.style.display = matches ? "" : "none";
       hasMatch = hasMatch || matches;

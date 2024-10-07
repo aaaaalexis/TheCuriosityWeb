@@ -21,24 +21,24 @@ export function getTranslation(key, lang, data = {}) {
 export function updateTranslations(state) {
   const lang = state.elements.languageSelect.value;
 
-  // Update all elements with data-original-text, including dynamic content
-  document.querySelectorAll("[data-original-text]").forEach((element) => {
-    const key = element.getAttribute("data-original-text");
+  // Update all elements with data-text, including dynamic content
+  document.querySelectorAll("[data-text]").forEach((element) => {
+    const key = element.getAttribute("data-text");
     const translation = getTranslation(key, lang, state.data);
     if (translation) {
       element.textContent = translation;
     }
   });
 
-  // Update special CSS labels
+  // Update item badges
   ["active", "new"].forEach((type) => {
-    const labelKey = `item_info_${type}`;
-    const labelText = getTranslation(labelKey, lang, state.data) || "";
-    document.documentElement.style.setProperty(`--${type}-label`, `"${labelText}"`);
+    const badgeKey = `item_info_${type}`;
+    const badgeText = getTranslation(badgeKey, lang, state.data) || "";
+    document.documentElement.style.setProperty(`--${type}-badge`, `"${badgeText}"`);
   });
 
   // Update search placeholder
-  state.elements.searchInput.placeholder = getTranslation("CitadelShopSearch", lang, state.data) || state.elements.searchInput.getAttribute("data-original-text");
+  state.elements.searchInput.placeholder = getTranslation("CitadelShopSearch", lang, state.data) || state.elements.searchInput.getAttribute("data-text");
 }
 
 function populateLanguageSelect(state) {

@@ -60,7 +60,7 @@
   color: var(--tab-color);
   white-space: nowrap;
 }
-.ability-grid {
+.ability-container {
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem;
@@ -77,18 +77,18 @@
   height: 7rem;
   overflow: hidden;
 }
-.icon-container {
+.ability-icon {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 50%;
 }
-.icon-container img {
+.ability-icon img {
   width: 2.5rem;
   height: 2.5rem;
   filter: var(--ability-icon-filter);
 }
-.label {
+.ability-name {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -110,7 +110,7 @@
   border-radius: 0.3rem;
   background: black;
   padding: 0.1rem 0.3rem;
-  content: var(--active-label);
+  content: var(--active-badge);
   color: white;
   font-size: 0.8rem;
   text-align: center;
@@ -126,7 +126,7 @@
   border-radius: 0 0 0 0.5rem;
   background: #ff4444;
   padding: 0.1rem 0.3rem;
-  content: var(--new-label);
+  content: var(--new-badge);
   color: white;
   font-size: 0.8rem;
   font-weight: bold;
@@ -158,7 +158,7 @@
   .tier-cost span img {
     height: 1rem;
   }
-  .ability-grid {
+  .ability-container {
     display: flex;
     justify-content: center;
     gap: 0.5rem;

@@ -7,17 +7,17 @@ export function initTierBonus(state) {
     weapon: {
       values: ["+6%", "+10%", "+14%", "+18%"],
       icon: "images/extra/icon_damage_force.svg",
-      label: "WeaponPower_label",
+      text: "WeaponPower_label",
     },
     vitality: {
       values: ["+11%", "+14%", "+17%", "+20%"],
       icon: "images/extra/icon_fave_active.svg",
-      label: "ArmorPower_label",
+      text: "ArmorPower_label",
     },
     spirit: {
       values: ["+4", "+8", "+12", "+16"],
       icon: "images/extra/icon_spirit.svg",
-      label: "TechPower_label",
+      text: "TechPower_label",
     },
   };
 
@@ -25,7 +25,7 @@ export function initTierBonus(state) {
   const firstTabConfig = bonusConfigs.weapon;
   tierBonus.querySelector(".tier-bonus strong").textContent = firstTabConfig.values[0];
   tierBonus.querySelector(".tier-bonus img").src = firstTabConfig.icon;
-  tierBonus.querySelector(".tier-bonus span").setAttribute("data-original-text", firstTabConfig.label);
+  tierBonus.querySelector(".tier-bonus span").setAttribute("data-text", firstTabConfig.text);
 
   document.addEventListener("mouseover", (e) => {
     const tier = e.target.closest(".tier");
@@ -43,7 +43,7 @@ export function initTierBonus(state) {
     // Update tierBonus content
     tierBonus.querySelector(".tier-bonus strong").textContent = config.values[tierLevel];
     tierBonus.querySelector(".tier-bonus img").src = config.icon;
-    tierBonus.querySelector(".tier-bonus span").setAttribute("data-original-text", config.label);
+    tierBonus.querySelector(".tier-bonus span").setAttribute("data-text", config.text);
 
     showTierBonus(tierBonus, tier);
     activeTierBonus = { tier, tierBonus };
