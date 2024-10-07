@@ -3,6 +3,7 @@ import { initI18n, updateUI } from "./i18n.js";
 import { initSearch } from "./search.js";
 import { initTierBonus } from "./tierBonus.js";
 import { initAbilityInfo } from "./abilityInfo.js";
+import { fetchLocalization } from "./fetchLocalization.js";
 
 const state = {
   data: {},
@@ -13,15 +14,12 @@ const state = {
 
 async function init() {
   try {
-    // Load data first
-    state.data = await (await fetch("json/i18n.json")).json();
-
-    // Initialize all required DOM elements
+    // Initialize all required DOM elements first
     state.elements = {
       languageSelect: document.getElementById("language-select"),
       searchInput: document.querySelector("#search-input"),
       tabs: document.querySelectorAll(".shop-tab button"),
-      tierBonus: document.querySelector(".tier-bonus"), // Reference to single tierBonus element
+      tierBonus: document.querySelector(".tier-bonus"),
     };
 
     // Validate critical elements
@@ -32,6 +30,12 @@ async function init() {
       console.error("Critical elements missing:", missingElements);
       return;
     }
+
+    // Show loading state
+    document.body.classList.add("loading");
+
+    // Fetch localization data
+    state.data = await fetchLocalization();
 
     // Initialize features
     await initTabs(state);
@@ -59,8 +63,14 @@ async function init() {
     if (firstTab) {
       activateTab(firstTab, state);
     }
+
+    // Hide loading state
+    document.body.classList.remove("loading");
   } catch (error) {
     console.error("Initialization error:", error);
+    // Show error state to user
+    document.body.classList.remove("loading");
+    document.body.classList.add("error");
   }
 }
 
