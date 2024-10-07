@@ -4,12 +4,12 @@ export function initAbilityInfo(state) {
   const abilityInfo = document.querySelector(".ability-info");
   let activeAbilityInfo = null;
 
-  const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+  const isSmallViewport = window.matchMedia("(max-width: 1440px)").matches;
 
-  if (isTouchDevice) {
-    initTouchBehavior(abilityInfo, state);
+  if (isSmallViewport) {
+    initSmallViewportBehavior(abilityInfo, state);
   } else {
-    initMouseBehavior(abilityInfo, state);
+    initLargeViewportBehavior(abilityInfo, state);
   }
 
   document.addEventListener(
@@ -30,20 +30,20 @@ export function initAbilityInfo(state) {
   }
 }
 
-function initTouchBehavior(abilityInfo, state) {
+function initSmallViewportBehavior(abilityInfo, state) {
   document.addEventListener("click", (e) => {
     const ability = e.target.closest(".ability");
 
     if (ability) {
       e.preventDefault();
-      handleAbilityTouch(ability, abilityInfo, state);
+      handleAbilityClick(ability, abilityInfo, state);
     } else if (!e.target.closest(".ability-info")) {
       hideAbilityInfo(abilityInfo);
     }
   });
 }
 
-function initMouseBehavior(abilityInfo, state) {
+function initLargeViewportBehavior(abilityInfo, state) {
   let activeAbilityInfo = null;
 
   document.addEventListener("mouseover", (e) => {
@@ -74,7 +74,7 @@ function initMouseBehavior(abilityInfo, state) {
   });
 }
 
-function handleAbilityTouch(ability, abilityInfo, state) {
+function handleAbilityClick(ability, abilityInfo, state) {
   const nameElement = ability.querySelector(".ability-name");
   if (!nameElement) return;
 
