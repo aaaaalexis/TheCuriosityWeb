@@ -1,4 +1,4 @@
-import { getTranslation } from './uiManager.js';
+import { getTranslation } from "./uiManager.js";
 
 export function initAbilityInfo(state) {
   const abilityInfo = document.querySelector(".ability-info");
@@ -12,11 +12,15 @@ export function initAbilityInfo(state) {
     initLargeViewportBehavior(abilityInfo, state);
   }
 
-  document.addEventListener("scroll", () => {
-    if (activeAbilityInfo) {
-      showAbilityInfo(activeAbilityInfo.abilityInfo, activeAbilityInfo.ability);
-    }
-  }, true);
+  document.addEventListener(
+    "scroll",
+    () => {
+      if (activeAbilityInfo) {
+        showAbilityInfo(activeAbilityInfo.abilityInfo, activeAbilityInfo.ability);
+      }
+    },
+    true
+  );
 
   const infoClose = abilityInfo.querySelector(".info-close");
   if (infoClose) {
@@ -125,9 +129,7 @@ function showAbilityInfo(abilityInfo, ability) {
 
   const availableSpaceRight = containerRect.right - abilityRect.right - 20;
 
-  let left = availableSpaceRight >= abilityInfoRect.width
-    ? abilityRect.right + 10
-    : abilityRect.left - abilityInfoRect.width - 10;
+  let left = availableSpaceRight >= abilityInfoRect.width ? abilityRect.right + 20 : abilityRect.left - abilityInfoRect.width - 20;
 
   const abilityCenter = abilityRect.top + abilityRect.height / 2;
   let top = abilityCenter - abilityInfoRect.height / 2;
@@ -194,11 +196,15 @@ export function initTierBonus(state) {
     }
   });
 
-  document.addEventListener("scroll", () => {
-    if (activeTierBonus) {
-      showTierBonus(activeTierBonus.tierBonus, activeTierBonus.tier);
-    }
-  }, true);
+  document.addEventListener(
+    "scroll",
+    () => {
+      if (activeTierBonus) {
+        showTierBonus(activeTierBonus.tierBonus, activeTierBonus.tier);
+      }
+    },
+    true
+  );
 }
 
 function initializeTierBonus(tierBonus, config) {

@@ -1,9 +1,9 @@
 .tier {
   display: flex;
   position: relative;
-  padding: 1.5rem 0;
-  background: var(--tier-color);
   transition: 0.3s;
+  background: var(--tier-color);
+  padding: 1.5rem 0;
 }
 .tier:nth-child(even) {
   background: var(--tier-color-even);
@@ -20,14 +20,14 @@
 .tier-cost {
   display: flex;
   flex: 0 0 4rem;
-  max-width: 4rem;
   justify-content: center;
   align-items: center;
+  max-width: 4rem;
 }
 .tier-cost span {
   display: flex;
-  gap: 0.3rem;
   align-items: center;
+  gap: 0.3rem;
   transform: rotate(-90deg);
   color: #70b29b;
   font-weight: bold;
@@ -42,15 +42,15 @@
 .tier-bonus {
   display: none;
   position: absolute;
-  text-align: center;
-  padding: 0.5rem;
   border-radius: 0.3rem;
   background: var(--tier-bonus-color);
+  padding: 0.5rem 1rem;
   font-weight: 600;
+  text-align: center;
 }
 .tier-bonus strong {
-  font-size: 1.2rem;
   color: white;
+  font-size: 1.2rem;
 }
 .tier-bonus img {
   width: 1.2rem;
@@ -70,12 +70,17 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  box-shadow: 0.4rem 0.4rem rgba(0, 0, 0, 0.2);
+  transition: 0.1s;
+  box-shadow: 0.3rem 0.3rem rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
   background: var(--ability-color);
   width: 6rem;
   height: 7rem;
   overflow: hidden;
+}
+.ability:hover {
+  transform: scale(1.05);
+  box-shadow: none;
 }
 .ability-icon {
   display: flex;
@@ -84,9 +89,9 @@
   height: 50%;
 }
 .ability-icon img {
+  filter: var(--ability-icon-filter);
   width: 2.5rem;
   height: 2.5rem;
-  filter: var(--ability-icon-filter);
 }
 .ability-name {
   display: flex;
@@ -112,9 +117,71 @@
   padding: 0.1rem 0.3rem;
   content: var(--active-badge);
   color: white;
+  font-weight: bold;
   font-size: 0.8rem;
   text-align: center;
+}
+.ability-info {
+  display: none;
+  position: relative;
+  flex-direction: column;
+  z-index: 100;
+  box-shadow: rgba(0, 0, 0, 0.5) 0 0 1rem;
+  border-radius: 0.5rem;
+  background-color: #80550f;
+  width: 20rem;
+  overflow: hidden;
+  color: #c5b7a8;
+}
+.info-header {
+  display: flex;
+  flex-direction: column;
+  background: var(--tab-color);
+  padding: 1rem;
+  color: white;
   font-weight: bold;
+}
+.info-name {
+  margin: 0;
+  font-size: 1.3rem;
+  text-shadow: 0.1rem 0.1rem rgba(0, 0, 0, 0.1);
+}
+.info-cost {
+  display: flex;
+  gap: 0.3rem;
+  filter: brightness(1.4);
+  color: #70b29b;
+  font-size: 1.1rem;
+}
+.info-cost img {
+  height: 1.5rem;
+}
+.info-language-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+.info-language {
+  display: flex;
+  align-items: center;
+  background: var(--tier-color);
+}
+.info-localized {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  border-radius: 0.3rem;
+  background-color: var(--tier-bonus-color);
+  min-height: 1.5rem;
+  font-weight: bold;
+}
+.info-localized-name {
+  flex: 2;
+  padding: 0 1rem;
+}
+.info-close {
+  display: none;
 }
 
 /* Mobile */
@@ -123,8 +190,8 @@
   .tier {
     display: flex;
     flex-direction: column;
-    padding: 1rem;
     gap: 1rem;
+    padding: 1rem;
   }
   .tier-cost {
     display: flex;
@@ -147,5 +214,21 @@
     display: flex;
     justify-content: center;
     gap: 0.5rem;
+  }
+  .ability-info {
+    width: 90%;
+    max-height: 90%;
+  }
+  .info-language-container {
+    overflow-y: scroll;
+  }
+  .info-close {
+    display: block;
+    align-content: center;
+    cursor: pointer;
+    background: var(--tier-bonus-color);
+    width: 100%;
+    height: 3rem;
+    text-align: center;
   }
 }
