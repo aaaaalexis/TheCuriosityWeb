@@ -25,10 +25,13 @@ export function initAbilityInfo(state) {
     activeAbilityInfo = { ability, abilityInfo };
   });
 
-  document.addEventListener("mouseout", (e) => {
-    if (!e.target.closest(".ability") && !e.relatedTarget?.closest(".ability")) {
-      hideAbilityInfo(abilityInfo);
-      activeAbilityInfo = null;
+  document.addEventListener("mouseover", (e) => {
+    if (activeAbilityInfo) {
+      const hoveredAbility = e.target.closest(".ability");
+      if (!hoveredAbility || hoveredAbility !== activeAbilityInfo.ability) {
+        hideAbilityInfo(abilityInfo);
+        activeAbilityInfo = null;
+      }
     }
   });
 
@@ -49,7 +52,7 @@ function updateAbilityInfoContent(abilityInfo, translations, textKey, cost, stat
   // Update name and cost
   const infoName = abilityInfo.querySelector(".info-name");
   const translation = getTranslation(textKey, lang, state.data);
-  infoName.textContent = translation || translations[Object.keys(translations)[0]]; // Fallback to first translation if needed
+  infoName.textContent = translation || translations[Object.keys(translations)[0]];
 
   const infoCost = abilityInfo.querySelector(".info-cost");
   infoCost.innerHTML = `<img src="images/hud/icons/icon_soul.svg" /> ${cost}`;
@@ -71,6 +74,10 @@ function updateAbilityInfoContent(abilityInfo, translations, textKey, cost, stat
 }
 
 function showAbilityInfo(abilityInfo, ability) {
+  // Make the popup visible but with zero opacity to measure its dimensions
+  abilityInfo.style.display = "flex";
+  abilityInfo.style.opacity = "0";
+
   const containerRect = document.querySelector(".shop-container").getBoundingClientRect();
   const abilityRect = ability.getBoundingClientRect();
   const abilityInfoRect = abilityInfo.getBoundingClientRect();
@@ -78,30 +85,34 @@ function showAbilityInfo(abilityInfo, ability) {
   // Calculate available space to the right
   const availableSpaceRight = containerRect.right - abilityRect.right - 20; // 20px buffer
 
-  // Default positioning to the right
-  let left = abilityRect.right + 10;
-
-  // If not enough space on the right, position to the left
-  if (availableSpaceRight < abilityInfoRect.width) {
+  // Determine horizontal position
+  let left;
+  if (availableSpaceRight >= abilityInfoRect.width) {
+    // Position to the right if there's enough space
+    left = abilityRect.right + 10;
+  } else {
+    // Position to the left if there's not enough space on the right
     left = abilityRect.left - abilityInfoRect.width - 10;
   }
 
-  // Calculate vertical position
-  let top = abilityRect.top + (abilityRect.height - abilityInfoRect.height) / 2;
+  // Calculate vertical position to center both elements
+  const abilityCenter = abilityRect.top + abilityRect.height / 2;
+  const top = abilityCenter - abilityInfoRect.height / 2;
 
   // Ensure the popup stays within the viewport vertically
   const viewportHeight = window.innerHeight;
-  if (top < 0) {
-    top = 10;
-  } else if (top + abilityInfoRect.height > viewportHeight) {
-    top = viewportHeight - abilityInfoRect.height - 10;
+  let finalTop = top;
+  if (finalTop < 10) {
+    finalTop = 10;
+  } else if (finalTop + abilityInfoRect.height > viewportHeight - 10) {
+    finalTop = viewportHeight - abilityInfoRect.height - 10;
   }
 
-  // Add scroll offset to position absolutely in the document
+  // Apply the final position with scroll offset
   abilityInfo.style.position = "absolute";
   abilityInfo.style.left = `${left + window.pageXOffset}px`;
-  abilityInfo.style.top = `${top + window.pageYOffset}px`;
-  abilityInfo.style.display = "flex";
+  abilityInfo.style.top = `${finalTop + window.pageYOffset}px`;
+  abilityInfo.style.opacity = "1";
 }
 
 function hideAbilityInfo(abilityInfo) {
