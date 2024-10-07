@@ -1,4 +1,4 @@
-import { getTranslation } from "./i18n.js";
+import { getTranslation } from './uiManager.js';
 
 export function initAbilityInfo(state) {
   const abilityInfo = document.querySelector(".ability-info");
@@ -12,28 +12,21 @@ export function initAbilityInfo(state) {
     initLargeViewportBehavior(abilityInfo, state);
   }
 
-  document.addEventListener(
-    "scroll",
-    (e) => {
-      if (activeAbilityInfo) {
-        showAbilityInfo(activeAbilityInfo.abilityInfo, activeAbilityInfo.ability);
-      }
-    },
-    true
-  );
+  document.addEventListener("scroll", () => {
+    if (activeAbilityInfo) {
+      showAbilityInfo(activeAbilityInfo.abilityInfo, activeAbilityInfo.ability);
+    }
+  }, true);
 
   const infoClose = abilityInfo.querySelector(".info-close");
   if (infoClose) {
-    infoClose.addEventListener("click", () => {
-      hideAbilityInfo(abilityInfo);
-    });
+    infoClose.addEventListener("click", () => hideAbilityInfo(abilityInfo));
   }
 }
 
 function initSmallViewportBehavior(abilityInfo, state) {
   document.addEventListener("click", (e) => {
     const ability = e.target.closest(".ability");
-
     if (ability) {
       e.preventDefault();
       handleAbilityClick(ability, abilityInfo, state);
@@ -100,7 +93,6 @@ function showAbilityInfoCentered(abilityInfo) {
 function updateAbilityInfoContent(abilityInfo, textKey, cost, state) {
   const lang = state.elements.languageSelect.value;
 
-  // Update name and cost
   const infoName = abilityInfo.querySelector(".info-name");
   const translation = getTranslation(textKey, lang, state.data);
   infoName.textContent = translation || textKey;
@@ -108,11 +100,9 @@ function updateAbilityInfoContent(abilityInfo, textKey, cost, state) {
   const infoCost = abilityInfo.querySelector(".info-cost");
   infoCost.innerHTML = `<img src="images/hud/icons/icon_soul.svg" /> ${cost}`;
 
-  // Clear all previous .info-language divs
   const languageContainer = abilityInfo.querySelector(".info-language-container");
   languageContainer.innerHTML = "";
 
-  // Add each translation in its own .info-language div
   const translations = state.data[textKey];
   Object.entries(translations).forEach(([lang, translation]) => {
     const languageDiv = document.createElement("div");
@@ -126,7 +116,6 @@ function updateAbilityInfoContent(abilityInfo, textKey, cost, state) {
 }
 
 function showAbilityInfo(abilityInfo, ability) {
-  // Make the popup visible but with zero opacity to measure its dimensions
   abilityInfo.style.display = "flex";
   abilityInfo.style.opacity = "0";
 
@@ -134,33 +123,18 @@ function showAbilityInfo(abilityInfo, ability) {
   const abilityRect = ability.getBoundingClientRect();
   const abilityInfoRect = abilityInfo.getBoundingClientRect();
 
-  // Calculate available space to the right
-  const availableSpaceRight = containerRect.right - abilityRect.right - 20; // 20px buffer
+  const availableSpaceRight = containerRect.right - abilityRect.right - 20;
 
-  // Determine horizontal position
-  let left;
-  if (availableSpaceRight >= abilityInfoRect.width) {
-    // Position to the right if there's enough space
-    left = abilityRect.right + 10;
-  } else {
-    // Position to the left if there's not enough space on the right
-    left = abilityRect.left - abilityInfoRect.width - 10;
-  }
+  let left = availableSpaceRight >= abilityInfoRect.width
+    ? abilityRect.right + 10
+    : abilityRect.left - abilityInfoRect.width - 10;
 
-  // Calculate vertical position to center both elements
   const abilityCenter = abilityRect.top + abilityRect.height / 2;
-  const top = abilityCenter - abilityInfoRect.height / 2;
+  let top = abilityCenter - abilityInfoRect.height / 2;
 
-  // Ensure the popup stays within the viewport vertically
   const viewportHeight = window.innerHeight;
-  let finalTop = top;
-  if (finalTop < 10) {
-    finalTop = 10;
-  } else if (finalTop + abilityInfoRect.height > viewportHeight - 10) {
-    finalTop = viewportHeight - abilityInfoRect.height - 10;
-  }
+  let finalTop = Math.max(10, Math.min(top, viewportHeight - abilityInfoRect.height - 10));
 
-  // Apply the final position with scroll offset
   abilityInfo.style.position = "absolute";
   abilityInfo.style.left = `${left + window.pageXOffset}px`;
   abilityInfo.style.top = `${finalTop + window.pageYOffset}px`;
@@ -169,4 +143,88 @@ function showAbilityInfo(abilityInfo, ability) {
 
 function hideAbilityInfo(abilityInfo) {
   abilityInfo.style.display = "none";
+}
+
+export function initTierBonus(state) {
+  const tierBonus = document.querySelector(".tier-bonus");
+  let activeTierBonus = null;
+
+  const bonusConfigs = {
+    weapon: {
+      values: ["+6%", "+10%", "+14%", "+18%"],
+      icon: "images/extra/icon_damage_force.svg",
+      text: "WeaponPower_label",
+    },
+    vitality: {
+      values: ["+11%", "+14%", "+17%", "+20%"],
+      icon: "images/extra/icon_fave_active.svg",
+      text: "ArmorPower_label",
+    },
+    spirit: {
+      values: ["+4", "+8", "+12", "+16"],
+      icon: "images/extra/icon_spirit.svg",
+      text: "TechPower_label",
+    },
+  };
+
+  initializeTierBonus(tierBonus, bonusConfigs.weapon);
+
+  document.addEventListener("mouseover", (e) => {
+    const tier = e.target.closest(".tier");
+    if (!tier || tier === activeTierBonus?.tier) return;
+
+    const currentTab = document.querySelector(".shop-tab button.active")?.dataset.tab;
+    if (!currentTab) return;
+
+    const tierLevel = parseInt(tier.className.match(/t(\d+)/)?.[1] || "0") - 1;
+    if (tierLevel < 0) return;
+
+    const config = bonusConfigs[currentTab];
+    if (!config) return;
+
+    updateTierBonusContent(tierBonus, config, tierLevel);
+    showTierBonus(tierBonus, tier);
+    activeTierBonus = { tier, tierBonus };
+  });
+
+  document.addEventListener("mouseout", (e) => {
+    if (!e.target.closest(".tier") && !e.relatedTarget?.closest(".tier")) {
+      hideTierBonus(tierBonus);
+      activeTierBonus = null;
+    }
+  });
+
+  document.addEventListener("scroll", () => {
+    if (activeTierBonus) {
+      showTierBonus(activeTierBonus.tierBonus, activeTierBonus.tier);
+    }
+  }, true);
+}
+
+function initializeTierBonus(tierBonus, config) {
+  tierBonus.querySelector(".tier-bonus strong").textContent = config.values[0];
+  tierBonus.querySelector(".tier-bonus img").src = config.icon;
+  tierBonus.querySelector(".tier-bonus span").setAttribute("data-text", config.text);
+}
+
+function updateTierBonusContent(tierBonus, config, tierLevel) {
+  tierBonus.querySelector(".tier-bonus strong").textContent = config.values[tierLevel];
+  tierBonus.querySelector(".tier-bonus img").src = config.icon;
+  tierBonus.querySelector(".tier-bonus span").setAttribute("data-text", config.text);
+}
+
+function showTierBonus(tierBonus, tier) {
+  tierBonus.style.display = "block";
+  const tierRect = tier.getBoundingClientRect();
+  const tierBonusRect = tierBonus.getBoundingClientRect();
+
+  const left = Math.max(0, tierRect.left - tierBonusRect.width);
+  const top = Math.max(0, tierRect.top + (tierRect.height - tierBonusRect.height) / 2);
+
+  tierBonus.style.left = `${left + window.scrollX}px`;
+  tierBonus.style.top = `${top + window.scrollY}px`;
+}
+
+function hideTierBonus(tierBonus) {
+  tierBonus.style.display = "none";
 }
