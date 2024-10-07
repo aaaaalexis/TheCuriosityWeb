@@ -4,12 +4,14 @@ import { initSearch } from "./search.js";
 import { initTierBonus } from "./tierBonus.js";
 import { initAbilityInfo } from "./abilityInfo.js";
 import { fetchLocalization } from "./fetchLocalization.js";
+import { loadShopItems, renderShopItems } from "./shopLoader.js";
 
 const state = {
   data: {},
   tabStyles: {},
   currentSearchQuery: "",
   elements: {},
+  shopItems: [],
 };
 
 async function init() {
@@ -34,8 +36,11 @@ async function init() {
     // Show loading state
     document.body.classList.add("loading");
 
-    // Fetch localization data
-    state.data = await fetchLocalization();
+    // Fetch localization data and shop items concurrently
+    const [localizationData, shopItems] = await Promise.all([fetchLocalization(), loadShopItems()]);
+
+    state.data = localizationData;
+    state.shopItems = shopItems;
 
     // Initialize features
     await initTabs(state);
@@ -48,6 +53,9 @@ async function init() {
 
     // Update UI with saved/default language
     updateUI(state);
+
+    // Render shop items
+    renderShopItems(state.shopItems);
 
     // Initialize tier-bonus and ability-info after language is set
     initTierBonus(state);
