@@ -302,7 +302,7 @@ body {
     box-shadow: 0.4rem 0.4rem rgba(0, 0, 0, 0.2);
   }
   .info-language-container {
-    overflow: scroll;
+    overflow-y: scroll;
   }
   .info-close {
     display: block;
