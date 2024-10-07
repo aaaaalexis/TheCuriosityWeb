@@ -56,10 +56,9 @@ function initMouseBehavior(abilityInfo, state) {
     const textKey = nameElement.dataset.text;
     const cost = nameElement.dataset.cost;
 
-    const translations = state.data.gc[textKey];
-    if (!translations) return;
+    if (!state.data[textKey]) return;
 
-    updateAbilityInfoContent(abilityInfo, translations, textKey, cost, state);
+    updateAbilityInfoContent(abilityInfo, textKey, cost, state);
     showAbilityInfo(abilityInfo, ability);
     activeAbilityInfo = { ability, abilityInfo };
   });
@@ -82,10 +81,9 @@ function handleAbilityTouch(ability, abilityInfo, state) {
   const textKey = nameElement.dataset.text;
   const cost = nameElement.dataset.cost;
 
-  const translations = state.data.gc[textKey];
-  if (!translations) return;
+  if (!state.data[textKey]) return;
 
-  updateAbilityInfoContent(abilityInfo, translations, textKey, cost, state);
+  updateAbilityInfoContent(abilityInfo, textKey, cost, state);
   showAbilityInfoCentered(abilityInfo);
 }
 
@@ -99,13 +97,13 @@ function showAbilityInfoCentered(abilityInfo) {
   abilityInfo.style.zIndex = "1000";
 }
 
-function updateAbilityInfoContent(abilityInfo, translations, textKey, cost, state) {
+function updateAbilityInfoContent(abilityInfo, textKey, cost, state) {
   const lang = state.elements.languageSelect.value;
 
   // Update name and cost
   const infoName = abilityInfo.querySelector(".info-name");
   const translation = getTranslation(textKey, lang, state.data);
-  infoName.textContent = translation || translations[Object.keys(translations)[0]];
+  infoName.textContent = translation || textKey;
 
   const infoCost = abilityInfo.querySelector(".info-cost");
   infoCost.innerHTML = `<img src="images/hud/icons/icon_soul.svg" /> ${cost}`;
@@ -115,6 +113,7 @@ function updateAbilityInfoContent(abilityInfo, translations, textKey, cost, stat
   languageContainer.innerHTML = "";
 
   // Add each translation in its own .info-language div
+  const translations = state.data[textKey];
   Object.entries(translations).forEach(([lang, translation]) => {
     const languageDiv = document.createElement("div");
     languageDiv.className = "info-language";

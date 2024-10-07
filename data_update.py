@@ -87,7 +87,6 @@ def main():
                 "BrowseItems_Title",
                 "BrowseItems_Desc",
                 "item_info_active",
-                "item_info_new"
             ]),
             "attributes": create_translations(attributes_data, [
                 "WeaponPower_label",

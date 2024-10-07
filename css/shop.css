@@ -116,24 +116,6 @@
   text-align: center;
   font-weight: bold;
 }
-.new-item {
-  position: relative;
-}
-.new-item::after {
-  position: absolute;
-  top: 0;
-  right: 0;
-  border-radius: 0 0 0 0.5rem;
-  background: #ff4444;
-  padding: 0.1rem 0.3rem;
-  content: var(--new-badge);
-  color: white;
-  font-size: 0.8rem;
-  font-weight: bold;
-}
-.link-item {
-  position: relative;
-}
 
 /* Mobile */
 
