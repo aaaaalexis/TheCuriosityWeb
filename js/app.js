@@ -35,7 +35,7 @@ function initElements() {
     languageSelect: document.getElementById("language-select"),
     searchInput: document.querySelector("#search-input"),
     tabs: document.querySelectorAll(".shop-tab button"),
-    tierBonus: document.querySelector(".tier-bonus"),
+    tierBonus: document.querySelector(".tier-bonus-container"),
   };
 
   const missingElements = validateCriticalElements();
@@ -76,7 +76,10 @@ export function activateTab(btn) {
 
   sessionStorage.setItem("selectedTab", tab);
   document.documentElement.style.setProperty("--tab-color", getComputedStyle(btn).getPropertyValue("--tab-color"));
+  document.documentElement.style.setProperty("--tier-color-hover", getComputedStyle(tabElement).getPropertyValue("--tier-color-hover"));
   document.documentElement.style.setProperty("--tier-bonus-color", getComputedStyle(tabElement).getPropertyValue("--tier-bonus-color"));
+  document.documentElement.style.setProperty("--info-color", getComputedStyle(tabElement).getPropertyValue("--info-color"));
+  document.documentElement.style.setProperty("--info-color-alt", getComputedStyle(tabElement).getPropertyValue("--info-color-alt"));
 
   updateUI(state);
 }

@@ -1,7 +1,7 @@
 import { getTranslation } from "./uiManager.js";
 
 export function initAbilityInfo(state) {
-  const abilityInfo = document.querySelector(".ability-info");
+  const abilityInfo = document.querySelector(".info-container");
   let activeAbilityInfo = null;
 
   const isSmallViewport = window.matchMedia("(max-width: 1440px)").matches;
@@ -34,7 +34,7 @@ function initSmallViewportBehavior(abilityInfo, state) {
     if (ability) {
       e.preventDefault();
       handleAbilityClick(ability, abilityInfo, state);
-    } else if (!e.target.closest(".ability-info")) {
+    } else if (!e.target.closest(".info-container")) {
       hideAbilityInfo(abilityInfo);
     }
   });
@@ -148,7 +148,7 @@ function hideAbilityInfo(abilityInfo) {
 }
 
 export function initTierBonus(state) {
-  const tierBonus = document.querySelector(".tier-bonus");
+  const tierBonus = document.querySelector(".tier-bonus-container");
   let activeTierBonus = null;
 
   const bonusConfigs = {
@@ -208,15 +208,15 @@ export function initTierBonus(state) {
 }
 
 function initializeTierBonus(tierBonus, config) {
-  tierBonus.querySelector(".tier-bonus strong").textContent = config.values[0];
-  tierBonus.querySelector(".tier-bonus img").src = config.icon;
-  tierBonus.querySelector(".tier-bonus span").setAttribute("data-text", config.text);
+  tierBonus.querySelector(".tier-bonus-value span").textContent = config.values[0];
+  tierBonus.querySelector(".tier-bonus-value img").src = config.icon;
+  tierBonus.querySelector(".tier-bonus-label").setAttribute("data-text", config.text);
 }
 
 function updateTierBonusContent(tierBonus, config, tierLevel) {
-  tierBonus.querySelector(".tier-bonus strong").textContent = config.values[tierLevel];
-  tierBonus.querySelector(".tier-bonus img").src = config.icon;
-  tierBonus.querySelector(".tier-bonus span").setAttribute("data-text", config.text);
+  tierBonus.querySelector(".tier-bonus-value span").textContent = config.values[tierLevel];
+  tierBonus.querySelector(".tier-bonus-value img").src = config.icon;
+  tierBonus.querySelector(".tier-bonus-label").setAttribute("data-text", config.text);
 }
 
 function showTierBonus(tierBonus, tier) {

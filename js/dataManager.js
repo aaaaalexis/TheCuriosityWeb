@@ -9,7 +9,7 @@ const languageCache = new Map();
 
 export async function fetchLocalization() {
   try {
-    const headers = GITHUB_API_KEY ? { "Authorization": `token ${GITHUB_API_KEY}` } : {};
+    const headers = GITHUB_API_KEY ? { Authorization: `token ${GITHUB_API_KEY}` } : {};
     const response = await fetch(GITHUB_API_URL, { headers });
     
     if (!response.ok) {
@@ -18,8 +18,8 @@ export async function fetchLocalization() {
 
     const files = await response.json();
     const languageFiles = files
-      .filter(file => file.name.endsWith(".json"))
-      .map(file => ({
+      .filter((file) => file.name.endsWith(".json"))
+      .map((file) => ({
         language: file.name.replace(".json", "").toLowerCase(),
         url: `${RAW_CONTENT_BASE}/${file.name}`,
       }));
@@ -27,7 +27,7 @@ export async function fetchLocalization() {
     const translations = {};
     const results = await Promise.all(languageFiles.map(fetchLanguageFile));
 
-    results.forEach(result => {
+    results.forEach((result) => {
       if (!result) return;
       const { language, data } = result;
       Object.entries(data).forEach(([key, value]) => {
@@ -74,12 +74,10 @@ async function fetchLanguageFile({ language, url }) {
 }
 
 function populateLanguageSelect(results) {
-  const validLanguages = results.filter(result => result !== null).map(result => result.language);
+  const validLanguages = results.filter((result) => result !== null).map((result) => result.language);
   const languageSelect = document.getElementById("language-select");
   if (languageSelect) {
-    languageSelect.innerHTML = validLanguages
-      .map(lang => `<option value="${lang}">${lang.charAt(0).toUpperCase() + lang.slice(1)}</option>`)
-      .join("");
+    languageSelect.innerHTML = validLanguages.map((lang) => `<option value="${lang}">${lang.charAt(0).toUpperCase() + lang.slice(1)}</option>`).join("");
   }
 }
 
@@ -99,7 +97,7 @@ export async function loadShopItems() {
 
 function processShopItems(data) {
   return data
-    .filter(item => item.type === "upgrade" && !item.disabled)
+    .filter((item) => item.type === "upgrade" && !item.disabled)
     .sort((a, b) => {
       const aIsActive = a.properties?.ability_cooldown !== 0;
       const bIsActive = b.properties?.ability_cooldown !== 0;
